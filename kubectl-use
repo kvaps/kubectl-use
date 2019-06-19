@@ -9,5 +9,10 @@ if [ -z "$1" ]; then
 fi
 
 kubectl config use "$1"
-kubectl config set-context --current --namespace="${2:-default}" > /dev/null
-echo "Switched to namespace \"${2:-default}\"."
+
+if [ -z "$2" ]; then
+  exit 0
+fi
+
+kubectl config set-context --current --namespace="$2" > /dev/null
+echo "Switched to namespace \"$2\"."

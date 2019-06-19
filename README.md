@@ -7,7 +7,6 @@ Plugin for simple switch kubernetes contexts and namespaces
 ```bash
 # kubectl use prod
 Switched to context "prod".
-Switched to namespace "default".
 
 # kubectl use stage kube-system
 Switched to context "stage".
