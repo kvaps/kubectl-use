@@ -1,2 +1,13 @@
 #!/bin/sh
-exec kubectl config use "$@"
+set -e
+
+if [ -z "$1" ]; then
+  echo "Usage:"
+  echo "    kubectl use <context> [namespace]"
+  echo
+  exit 1
+fi
+
+kubectl config use "$1"
+kubectl config set-context --current --namespace="${2:-default}" > /dev/null
+echo "Switched to namespace \"${2:-default}\"."
