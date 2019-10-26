@@ -1,18 +1,36 @@
 #!/bin/sh
 set -e
 
-if [ -z "$1" ]; then
+if [ -z "$1" ] || [ "${1::1}" = "-" ]; then
   echo "Usage:"
-  echo "    kubectl use <context> [namespace]"
+  echo "    kubectl use namespace"
+  echo "    kubectl use context"
+  echo "    kubectl use context namespace"
   echo
   exit 1
 fi
 
-kubectl config use "$1"
+for context in $(kubectl config get-contexts -o name); do
+  if [ "$1" = "$context" ]; then
+    new_context="$1"
+    break
+  fi
+done
 
-if [ -z "$2" ]; then
-  exit 0
+if [ -n "$new_context" ]; then
+  kubectl config use "$1"
+  if [ -n "$2" ]; then
+    new_namespace="$2"
+  fi
+else
+  if [ -n "$2" ]; then
+    echo "Can not swith context \"$1\"."
+    exit 1
+  fi
+  new_namespace="$1"
 fi
 
-kubectl config set-context --current --namespace="$2" > /dev/null
-echo "Switched to namespace \"$2\"."
+if [ -n "$new_namespace" ]; then
+  kubectl config set-context --current --namespace="$new_namespace" > /dev/null
+  echo "Switched to namespace \"$new_namespace\"."
+fi
