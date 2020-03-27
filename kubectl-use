@@ -1,14 +1,17 @@
 #!/bin/sh
 set -e
 
-if [ -z "$1" ] || [ "${1::1}" = "-" ]; then
-  echo "Usage:"
-  echo "    kubectl use namespace"
-  echo "    kubectl use context"
-  echo "    kubectl use context namespace"
-  echo
-  exit 1
-fi
+case $1 in
+  -*|"")
+    echo
+    echo "  Usage:"
+    echo "    kubectl use <namespace>"
+    echo "    kubectl use <context>"
+    echo "    kubectl use <context> <namespace>"
+    echo
+    exit 1
+  ;;
+esac
 
 for context in $(kubectl config get-contexts -o name); do
   if [ "$1" = "$context" ]; then
