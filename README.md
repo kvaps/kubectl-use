@@ -18,7 +18,16 @@ Switched to namespace "kube-system".
 
 ## Installation
 
-```
+using [krew](https://krew.sigs.k8s.io/):
+
+<pre>
+kubectl krew index add kvaps <a href="https://github.com/kvaps/krew-index">https://github.com/kvaps/krew-index</a>
+kubectl krew install kvaps/use
+</pre>
+
+or using curl:
+
+```bash
 curl -LO https://github.com/kvaps/kubectl-use/raw/master/kubectl-use
 chmod +x ./kubectl-use
 sudo mv ./kubectl-use /usr/local/bin/kubectl-use
