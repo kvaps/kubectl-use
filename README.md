@@ -32,3 +32,12 @@ curl -LO https://github.com/kvaps/kubectl-use/raw/master/kubectl-use
 chmod +x ./kubectl-use
 sudo mv ./kubectl-use /usr/local/bin/kubectl-use
 ```
+## Autocompletion
+
+Add to your `.zshrc` or `.bashrc` file:
+
+```bash
+if command -V kubectl-use >/dev/null; then
+  source <(kubectl-use -completion)
+fi
+```
