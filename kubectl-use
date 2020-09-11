@@ -1,8 +1,24 @@
 #!/usr/bin/env sh
 set -e
 
+
+
 case $1 in
+  -completion)
+    cat <<\EOT
+_kubectl_use() {
+  kubectl config get-contexts -o name
+  kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+}
+complete -F _kubectl_use kubectl use
+complete -F _kubectl_use kubectl-use
+EOT
+  exit 0
+  ;;
   -*|"")
+    echo
+    echo "  Completion:"
+    echo "    source <(kubectl use -completion)"
     echo
     echo "  Usage:"
     echo "    kubectl use <namespace>"
