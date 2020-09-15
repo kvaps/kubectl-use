@@ -1,31 +1,37 @@
 #!/usr/bin/env sh
 set -e
 
-
-
 case $1 in
-  -completion)
-    cat <<\EOT
+-completion)
+  cat <<\EOT
 _kubectl_use() {
-  kubectl config get-contexts -o name
-  kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+  local cur prev opts
+  case "${COMP_LINE}" in
+  kubectl\ use\ * | kubectl-use\ *)
+    kubectl config get-contexts -o name
+    kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
+    return
+    ;;
+  esac
+  if command -v __start_kubectl >/dev/null; then
+    __start_kubectl
+  fi
 }
-complete -F _kubectl_use kubectl use
-complete -F _kubectl_use kubectl-use
+complete -F _kubectl_use kubectl kubectl-use
 EOT
   exit 0
   ;;
-  -*|"")
-    echo
-    echo "  Completion:"
-    echo "    source <(kubectl use -completion)"
-    echo
-    echo "  Usage:"
-    echo "    kubectl use <namespace>"
-    echo "    kubectl use <context>"
-    echo "    kubectl use <context> <namespace>"
-    echo
-    exit 1
+-* | "")
+  echo
+  echo "  Completion:"
+  echo "    source <(kubectl use -completion)"
+  echo
+  echo "  Usage:"
+  echo "    kubectl use <namespace>"
+  echo "    kubectl use <context>"
+  echo "    kubectl use <context> <namespace>"
+  echo
+  exit 1
   ;;
 esac
 
@@ -50,6 +56,6 @@ else
 fi
 
 if [ -n "$new_namespace" ]; then
-  kubectl config set-context --current --namespace="$new_namespace" > /dev/null
+  kubectl config set-context --current --namespace="$new_namespace" >/dev/null
   echo "Switched to namespace \"$new_namespace\"."
 fi
