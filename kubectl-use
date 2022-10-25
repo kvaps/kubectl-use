@@ -21,10 +21,50 @@ complete -F _kubectl_use kubectl kubectl-use
 EOT
   exit 0
   ;;
+-bash-completion)
+  cat <<\EOT
+_kubectl_use() {
+  local cur="$2"
+  local previous="$3"
+
+  case "${COMP_LINE}" in
+    kubectl\ use\ *)
+      nword=$(($COMP_CWORD - 1))
+      ;;
+    kubectl-use\ *)
+      nword=$COMP_CWORD
+      ;;
+    *) return ;;
+  esac
+
+  candidates=()
+  case $nword in
+    1)
+      candidates+=( $(kubectl config get-contexts -o name 2>/dev/null ) )
+      candidates+=( $(kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null ) )
+      ;;
+    2)
+      candidates+=( $(kubectl --context=$previous get ns -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' 2>/dev/null ) )
+      ;;
+    *) return ;;
+  esac
+
+  COMPREPLY=()
+  for candidate in ${candidates[@]}; do
+    if [[ "$candidate" == "$cur"* ]]; then
+      COMPREPLY+=("$candidate")
+    fi
+  done
+}
+complete -F _kubectl_use kubectl kubectl-use
+EOT
+  exit 0
+  ;;
 -* | "")
   echo
   echo "  Completion:"
   echo "    source <(kubectl use -completion)"
+  echo "    source <(kubectl use -bash-completion)"
   echo
   echo "  Usage:"
   echo "    kubectl use <namespace>"
