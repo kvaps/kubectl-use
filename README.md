@@ -34,10 +34,10 @@ sudo mv ./kubectl-use /usr/local/bin/kubectl-use
 ```
 ## Autocompletion
 
-Add to your `.zshrc` or `.bashrc` file:
+Currently krew does not support for installing completion, thus only curl method is available:
 
 ```bash
-if command -V kubectl-use >/dev/null; then
-  source <(kubectl-use -completion)
-fi
+curl -LO https://github.com/kvaps/kubectl-use/raw/master/kubectl_complete-use 
+chmod +x ./kubectl_complete-use
+sudo mv ./kubectl_complete-use /usr/local/bin/kubectl_complete-use
 ```

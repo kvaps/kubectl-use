@@ -1,0 +1,11 @@
+#!/bin/sh
+if [ "$#" -le 1 ]; then
+  if kubectl config get-contexts "$1" >/dev/null 2>&1; then
+    kubectl get namespaces --context "$1" -o custom-columns=NAME:.metadata.name --no-headers
+  else
+    (kubectl config get-contexts -o=name; kubectl get namespaces -o custom-columns=NAME:.metadata.name --no-headers) | grep "$1"
+  fi
+fi
+if [ "$#" -eq 2 ]; then
+  kubectl get namespaces --context "$1" -o custom-columns=NAME:.metadata.name --no-headers | grep "$2"
+fi

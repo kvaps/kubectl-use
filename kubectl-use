@@ -2,29 +2,7 @@
 set -e
 
 case $1 in
--completion)
-  cat <<\EOT
-_kubectl_use() {
-  local cur prev opts
-  case "${COMP_LINE}" in
-  kubectl\ use\ * | kubectl-use\ *)
-    kubectl config get-contexts -o name
-    kubectl get ns -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
-    return
-    ;;
-  esac
-  if command -v __start_kubectl >/dev/null; then
-    __start_kubectl
-  fi
-}
-complete -F _kubectl_use kubectl kubectl-use
-EOT
-  exit 0
-  ;;
 -* | "")
-  echo
-  echo "  Completion:"
-  echo "    source <(kubectl use -completion)"
   echo
   echo "  Usage:"
   echo "    kubectl use <namespace>"
